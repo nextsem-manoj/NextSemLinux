@@ -1,0 +1,26 @@
+{
+  "name": "nextsem-linux",
+  "version": "1.0.0",
+  "description": "NextSemLinux — Interactive Linux 75-Question Professional Assessment Suite (Basic, Medium, Advanced)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nextsem-manoj/NextSemLinux.git"
+  },
+  "keywords": [
+    "linux",
+    "assessment",
+    "exam",
+    "quiz",
+    "rhcsa",
+    "lpic",
+    "nextsem"
+  ],
+  "author": "NextSem",
+  "license": "MIT"
+}
+

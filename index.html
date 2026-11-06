@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux Professional Assessment Hub | 75 Questions (Basic, Medium, Advanced)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+              900: '#164e63',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-cyan-500 selection:text-white flex flex-col">
+
+  <!-- Ambient Glow Background -->
+  <div class="ambient-glow-top"></div>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="sticky top-0 z-50 bg-slate-950/85 backdrop-blur-xl border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-sky-400 flex items-center justify-center font-black text-xl text-slate-950 shadow-lg shadow-cyan-500/20">
+          🐧
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-sky-300 to-emerald-400 bg-clip-text text-transparent">
+            Linux Professional Assessment
+          </h1>
+          <p class="text-[11px] text-slate-400 font-mono">75 QUESTIONS &bull; BASIC &bull; MEDIUM &bull; ADVANCED</p>
+        </div>
+      </div>
+
+      <!-- Live Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Mode Switcher -->
+        <div class="bg-slate-900 border border-slate-800 p-1 rounded-lg flex text-xs font-semibold">
+          <button id="btn-mode-practice" class="px-2.5 py-1 rounded bg-cyan-500 text-slate-950 font-bold transition-all shadow-sm">
+            Practice Mode
+          </button>
+          <button id="btn-mode-exam" class="px-2.5 py-1 rounded text-slate-400 hover:text-white transition-all">
+            Exam Mode
+          </button>
+        </div>
+
+        <!-- Download Unanswered Exam Paper -->
+        <a href="EXAM_PAPER_UNANSWERED.md" download class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700/80 hover:border-slate-500 text-xs font-semibold text-slate-300 transition-all">
+          <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Clean Exam Paper (.md)
+        </a>
+
+        <!-- Reset Test -->
+        <button id="btn-reset" class="px-3 py-1.5 rounded-lg bg-red-950/40 border border-red-800/40 hover:bg-red-900/50 text-red-300 text-xs font-semibold transition-all">
+          Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-6 relative z-10">
+
+    <!-- Overview Bar & Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="glass-card p-4 rounded-xl flex items-center justify-between">
+        <div>
+          <span class="text-xs text-slate-400 font-medium">Completed</span>
+          <div class="text-2xl font-bold text-white"><span id="stat-answered">0</span><span class="text-slate-500 text-lg">/75</span></div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-cyan-950/80 border border-cyan-800/40 flex items-center justify-center text-cyan-400 font-bold">
+          ✓
+        </div>
+      </div>
+
+      <div class="glass-card p-4 rounded-xl flex items-center justify-between">
+        <div>
+          <span class="text-xs text-slate-400 font-medium">Current Accuracy</span>
+          <div class="text-2xl font-bold text-emerald-400" id="stat-accuracy">0%</div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-emerald-950/80 border border-emerald-800/40 flex items-center justify-center text-emerald-400 font-bold">
+          🎯
+        </div>
+      </div>
+
+      <div class="glass-card p-4 rounded-xl flex items-center justify-between">
+        <div>
+          <span class="text-xs text-slate-400 font-medium">Score Breakdown</span>
+          <div class="text-sm font-semibold text-slate-300 mt-1">
+            <span class="text-emerald-400 font-bold" id="stat-correct">0</span> Correct &bull; <span class="text-rose-400 font-bold" id="stat-wrong">0</span> Wrong
+          </div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-purple-950/80 border border-purple-800/40 flex items-center justify-center text-purple-400 font-bold">
+          📊
+        </div>
+      </div>
+
+      <div class="glass-card p-4 rounded-xl flex items-center justify-between">
+        <div>
+          <span class="text-xs text-slate-400 font-medium" id="timer-label">Mode Active</span>
+          <div class="text-xl font-mono font-bold text-cyan-300" id="stat-timer">Practice (Untimed)</div>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-sky-950/80 border border-sky-800/40 flex items-center justify-center text-sky-400 font-bold">
+          ⏱️
+        </div>
+      </div>
+    </div>
+
+    <!-- Tier Filter Tabs & Search -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 glass-card p-3 rounded-xl">
+      <div class="flex items-center space-x-1.5 sm:space-x-2 overflow-x-auto w-full sm:w-auto">
+        <button class="tier-tab-btn active px-3.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-500 text-slate-950 transition-all shadow-sm" data-tier="all">
+          All (75)
+        </button>
+        <button class="tier-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all" data-tier="Basic">
+          Basic (1–25)
+        </button>
+        <button class="tier-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all" data-tier="Intermediate">
+          Intermediate (26–50)
+        </button>
+        <button class="tier-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all" data-tier="Advanced">
+          Advanced (51–75)
+        </button>
+      </div>
+
+      <div class="w-full sm:w-72">
+        <input type="text" id="search-input" placeholder="Search commands, topics..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400">
+      </div>
+    </div>
+
+    <!-- Quick Question Navigator Grid -->
+    <div class="glass-card p-4 rounded-xl space-y-2">
+      <div class="flex items-center justify-between text-xs text-slate-400">
+        <span class="font-semibold uppercase tracking-wider text-[11px]">Quick Jump Matrix (1–75)</span>
+        <div class="flex items-center gap-3">
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-slate-800 inline-block border border-slate-600"></span> Unanswered</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Correct</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span> Incorrect</span>
+        </div>
+      </div>
+      <div id="navigator-grid" class="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto pt-2"></div>
+    </div>
+
+    <!-- Question Cards Container -->
+    <div id="questions-container" class="space-y-4">
+      <!-- Injected via JavaScript -->
+    </div>
+
+    <!-- Exam Submit Button (visible in exam mode) -->
+    <div id="exam-submit-bar" class="hidden text-center py-6">
+      <button id="btn-submit-exam" class="px-8 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-extrabold text-sm shadow-lg shadow-emerald-500/20 transition-all">
+        Submit Exam &amp; View Complete Score Report
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Score Report Modal -->
+  <div id="report-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card max-w-lg w-full p-6 sm:p-8 rounded-2xl border-slate-700 space-y-6 text-center">
+      <div class="w-16 h-16 rounded-full bg-cyan-950 border border-cyan-500/40 text-3xl flex items-center justify-center mx-auto text-cyan-400">
+        🎓
+      </div>
+      <div>
+        <h3 class="text-2xl font-black text-white">Assessment Scorecard</h3>
+        <p class="text-xs text-slate-400 mt-1">Linux Professional Assessment Report</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 py-4 border-y border-slate-800">
+        <div>
+          <div class="text-xs text-slate-400">Total Score</div>
+          <div class="text-2xl font-black text-white" id="modal-score">0/75</div>
+        </div>
+        <div>
+          <div class="text-xs text-slate-400">Accuracy</div>
+          <div class="text-2xl font-black text-cyan-400" id="modal-percentage">0%</div>
+        </div>
+        <div>
+          <div class="text-xs text-slate-400">Passing Grade</div>
+          <div class="text-lg font-bold" id="modal-status">PASS</div>
+        </div>
+      </div>
+
+      <div class="space-y-2 text-left text-xs text-slate-300">
+        <div class="flex justify-between">
+          <span>Tier 1 (Basic):</span>
+          <span id="modal-tier-basic" class="font-bold text-white">0/25</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Tier 2 (Intermediate):</span>
+          <span id="modal-tier-intermediate" class="font-bold text-white">0/25</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Tier 3 (Advanced):</span>
+          <span id="modal-tier-advanced" class="font-bold text-white">0/25</span>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button id="modal-close-btn" class="flex-1 py-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-all">
+          Review Answers
+        </button>
+        <button id="modal-retake-btn" class="flex-1 py-2.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-all">
+          Retake Assessment
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-900 bg-slate-950 py-6 px-4 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div>
+        <strong class="text-slate-300">NextSem Linux Assessment Hub</strong> &bull; Complete 75-Question Skill Evaluator
+      </div>
+      <div>
+        Includes Clean Exam Sheet, Live Proctoring Mode, and Technical Explanations
+      </div>
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
+
